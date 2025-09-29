@@ -1,74 +1,51 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Header.css";
-import {
-  FaThLarge,
-  FaUserFriends,
-  FaPills,
-  FaCalendarAlt,
-  FaFileAlt,
-  FaChartBar,
-  FaBars,
-  FaTimes,
-} from "react-icons/fa";
+import { Menu, Heart, ShoppingCart, Search } from "lucide-react";
 
-const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
-
+export default function Header() {
   return (
-    <header className="header1">
-      {/* Left - Logo & Clinic Info */}
-      <div className="header-left1">
-        <div className="logo1">
-          <span className="logo-icon1">❤</span>
+    <header className="bg-white sticky top-0 z-50">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Muli:wght@700;800&display=swap');
+        .meesho-logo {
+          font-family: 'Muli', sans-serif;
+        }
+      `}</style>
+      <div className="px-4 py-4">
+        <div className="flex items-center justify-between">
+          {/* Menu Icon and Logo */}
+          <div className="flex items-center gap-3">
+            <button className="text-gray-700 hover:text-gray-900 flex items-center">
+              <Menu className="w-7 h-7" strokeWidth={2} />
+            </button>
+            <img 
+              src="https://www.meesho.com/assets/svgicons/meeshoLogo.svg" 
+              alt="Meesho" 
+              className="h-8"
+            />
+          </div>
+
+          {/* Right Icons */}
+          <div className="flex items-center gap-5">
+            <button className="hover:opacity-80">
+              <Heart className="w-8 h-8" fill="#FF4772" stroke="#FF4772" strokeWidth={2} />
+            </button>
+            <button className="hover:opacity-80">
+              <ShoppingCart className="w-8 h-8" fill="#C724B1" stroke="#C724B1" strokeWidth={2} />
+            </button>
+          </div>
         </div>
-        <div className="clinic-info1">
-          <h1>SkinCare Clinic</h1>
-          <p>Hair & Skin Specialist</p>
+
+        {/* Search Bar */}
+        <div className="mt-4 relative">
+          <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50">
+            <Search className="w-5 h-5 text-gray-400 ml-4" />
+            <input
+              type="text"
+              placeholder="Search for Sarees, Kurtis, Cosmetics, etc."
+              className="w-full px-3 py-3 text-sm bg-gray-50 focus:outline-none text-gray-700 placeholder-gray-500"
+            />
+          </div>
         </div>
       </div>
-
-      {/* Hamburger Button (Mobile only) */}
-      <div className="menu-toggle1" onClick={() => setMenuOpen(!menuOpen)}>
-        {menuOpen ? <FaTimes /> : <FaBars />}
-      </div>
-
-      {/* Navigation */}
-      <nav className={`header-nav1 ${menuOpen ? "open" : ""}`}>
-        <a href="#" onClick={() => {setMenuOpen(false);  navigate("/Dashboard");}}>
-          <FaThLarge /> Dashboard
-        </a>
-        <a href="#" onClick={(e) => {  e.preventDefault(); // page reload na ho
-            setMenuOpen(false);
-            navigate("/patients"); // route path
-          }}
-        >
-          <FaUserFriends /> Patients
-        </a>
-        <a href="#" onClick={(e) => {  e.preventDefault(); // page reload na ho
-            setMenuOpen(false);
-            navigate("/medicine"); // route path
-          }}
-        >
-          <FaPills /> Medicine
-        </a>
-        <a href="#" onClick={(e) => {  e.preventDefault(); // page reload na ho
-            setMenuOpen(false);
-            navigate("/appointment"); // route path
-          }}
-        >
-          <FaCalendarAlt /> Appointments
-        </a>
-        <a href="#" onClick={() => setMenuOpen(false)}>
-          <FaFileAlt /> Daily Report
-        </a>
-        <a href="#" onClick={() => setMenuOpen(false)}>
-          <FaChartBar /> Monthly Report
-        </a>
-      </nav>
     </header>
   );
-};
-
-export default Header;
+}
