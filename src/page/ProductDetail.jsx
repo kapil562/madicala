@@ -10,6 +10,7 @@ const ProductDetail = () => {
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [error, setError] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   if (!product) {
     return (
@@ -19,14 +20,17 @@ const ProductDetail = () => {
     );
   }
 
+  const finalPrice = product.price * quantity;
+
   const handleBuyNow = () => {
     if (!selectedSize) {
       setError("⚠️ Please select a size before buying.");
       return;
     }
     setError("");
-    // ✅ navigate to AddressPage with product id and pass state
-    navigate(`/AddressPage/${product.id}`, { state: { product, selectedSize } });
+    navigate(`/AddressPage/${product.id}`, {
+      state: { product, selectedSize, quantity, finalPrice },
+    });
   };
 
   const handleAddToCart = () => {
@@ -35,7 +39,9 @@ const ProductDetail = () => {
       return;
     }
     setError("");
-    alert(`🛒 Added ${product.name} (Size: ${selectedSize}) to cart`);
+    alert(
+      `🛒 Added ${product.name} (Size: ${selectedSize}, Qty: ${quantity}) - ₹${finalPrice} to cart`
+    );
   };
 
   return (
@@ -70,8 +76,9 @@ const ProductDetail = () => {
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold">{product.name}</h2>
 
+            {/* Price */}
             <div className="flex items-center gap-3 text-lg">
-              <span className="font-bold text-gray-800">₹{product.price}</span>
+              <span className="font-bold text-gray-800">₹{finalPrice}</span>
               <span className="text-green-600">{product.discount}% off</span>
             </div>
             <p className="text-sm text-green-700">Free Delivery</p>
@@ -80,7 +87,7 @@ const ProductDetail = () => {
             <div>
               <h4 className="font-medium mb-2">Select Size</h4>
               <div className="flex gap-3">
-                {["S", "M", "L", "XL"].map((size) => (
+                {["S", "M", "L", "XL", "XXL"].map((size) => (
                   <button
                     key={size}
                     onClick={() => {
@@ -97,8 +104,29 @@ const ProductDetail = () => {
                   </button>
                 ))}
               </div>
-              {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
             </div>
+
+            {/* Quantity */}
+            <div>
+              <h4 className="font-medium mb-2">Quantity</h4>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="px-3 py-1 border rounded-lg"
+                >
+                  -
+                </button>
+                <span className="px-4">{quantity}</span>
+                <button
+                  onClick={() => setQuantity((q) => q + 1)}
+                  className="px-3 py-1 border rounded-lg"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 
             {/* Buttons */}
             <div className="flex gap-4 mt-4">
@@ -147,7 +175,7 @@ const ProductDetail = () => {
               <ul className="space-y-1">
                 <li>Fabric: Cotton Blend</li>
                 <li>Sleeve Length: Long Sleeves</li>
-                <li>Sizes: S, M, L, XL</li>
+                <li>Sizes: S, M, L, XL, XXL</li>
                 <li>Country of Origin: India</li>
               </ul>
             </div>

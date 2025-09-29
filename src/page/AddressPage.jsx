@@ -5,7 +5,7 @@ import Header from "../component/Header";
 const AddressPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { product, size } = location.state || {};
+  const { product, selectedSize, quantity, finalPrice } = location.state || {};
 
   const [formData, setFormData] = useState({
     name: "",
@@ -47,7 +47,7 @@ const AddressPage = () => {
 
     // Navigate to Payment Page with data
     navigate(`/PaymentPage/${product.id}`, {
-      state: { product, size, formData },
+      state: { product, selectedSize, quantity, finalPrice, formData },
     });
   };
 
@@ -68,8 +68,10 @@ const AddressPage = () => {
             <h3 className="font-medium text-gray-800 line-clamp-1">
               {product.name}
             </h3>
-            <p className="text-sm text-gray-600">Size: {size} • Qty: 1</p>
-            <p className="font-semibold">₹{product.price}</p>
+            <p className="text-sm text-gray-600">
+              Size: {selectedSize} • Qty: {quantity}
+            </p>
+            <p className="font-semibold">₹{finalPrice}</p>
           </div>
         </div>
 
