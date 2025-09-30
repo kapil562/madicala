@@ -19,7 +19,7 @@ export default function Header() {
             <img 
               src="https://www.meesho.com/assets/svgicons/meeshoLogo.svg" 
               alt="Meesho" 
-              className="h-8"
+              className="h-8 mb-2"
             />
           </div>
 
