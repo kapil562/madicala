@@ -109,9 +109,10 @@ function ImageSlider({ images }) {
               onClick={() => setCurrentIndex(index)}
               className={`h-1.5 rounded-full transition-all ${
                 index === currentIndex
-                  ? "bg-purple-600 w-6"
+                  ? "w-6"
                   : "bg-gray-300 w-1.5"
               }`}
+              style={index === currentIndex ? { backgroundColor: '#9c27b0' } : {}}
             />
           ))}
         </div>
@@ -127,7 +128,7 @@ function useCountdown(startSeconds = 30 * 60) {
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 1) return startSeconds; // Reset after finish
+        if (prev <= 1) return startSeconds;
         return prev - 1;
       });
     }, 1000);
@@ -135,9 +136,10 @@ function useCountdown(startSeconds = 30 * 60) {
   }, [startSeconds]);
 
   const formatTime = () => {
-    const m = Math.floor(timeLeft / 60).toString().padStart(2, "0");
+    const h = Math.floor(timeLeft / 3600).toString().padStart(2, "0");
+    const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, "0");
     const s = (timeLeft % 60).toString().padStart(2, "0");
-    return `${m}m : ${s}s`;
+    return `${h}h : ${m}m : ${s}s`;
   };
 
   return formatTime();
@@ -150,33 +152,33 @@ function PromotionalBanners() {
   return (
     <div className="bg-white">
       {/* Buy 2 Get 1 Free Banner */}
-      <div className="w-full bg-purple-600 py-4 text-center text-white font-semibold text-sm">
+      <div className="w-full py-4 text-center text-white font-semibold text-base" style={{ backgroundColor: '#9c27b0' }}>
         Buy 2 Get 1 Free (Add 3 item to cart)
       </div>
 
       {/* Feature Icons */}
-      <div className="w-full bg-[#fffbea] flex justify-center py-4">
-        <img
-          src="https://kurtikk.diwalioffer.shop/static/media/freeshippingposter.8c0aff28d27a959880ff.webp"
-          alt="Easy returns, COD, Lowest price"
-          className="max-w-4xl w-full object-contain"
-        />
-      </div>
+       <div className="w-full bg-[#fffbea] flex justify-center py-4">
+      <img
+        src="https://kurtikk.diwalioffer.shop/static/media/freeshippingposter.8c0aff28d27a959880ff.webp" 
+        alt="Easy returns, COD, Lowest price"
+        className="max-w-4xl w-full object-contain"
+      />
+    </div>
 
       {/* Daily Deals */}
-      <div className="px-4 py-3 flex items-center justify-between border-t border-gray-200">
+      <div className="px-4 py-4 flex items-center justify-between bg-white">
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-bold text-gray-800">Meesho Daily Deals</h3>
-          <span className="text-xl">⚡</span>
+          <h3 className="text-xl font-bold text-gray-900">Meesho Daily Deals</h3>
+          <span className="text-2xl">⚡</span>
         </div>
-        <div className="bg-yellow-100 px-3 py-1 rounded-full flex items-center gap-1">
-          <span className="text-sm">⏰</span>
-          <span className="text-xs font-semibold">{time}</span>
+        <div className="px-4 py-2 rounded-full flex items-center gap-2" style={{ backgroundColor: '#fff4e6' }}>
+          <span className="text-lg">⏰</span>
+          <span className="text-sm font-semibold text-gray-800">{time}</span>
         </div>
       </div>
 
       {/* Track Order Banner */}
-      <div className="w-full bg-purple-600 py-3 text-center text-white font-semibold flex items-center justify-center gap-2 text-sm">
+      <div className="w-full py-4 text-center text-white font-semibold flex items-center justify-center gap-2 text-base" style={{ backgroundColor: '#9c27b0' }}>
         <span>🚚</span>
         <span>Track Your Order</span>
       </div>
@@ -328,7 +330,7 @@ function ProductGrid() {
       <CategoryCirclesSlider />
 
       {/* Maha Sale Banner */}
-      <div className="w-full bg-yellow-400 py-2 px-4">
+      <div className="w-full py-2 px-4" style={{ backgroundColor: '#ffc107' }}>
         <img
           src="https://kurtikk.diwalioffer.shop/static/media/pngmeesho.4e5fc246936989b7b849.jpeg"
           alt="Maha Sale"
