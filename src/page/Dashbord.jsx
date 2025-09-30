@@ -246,18 +246,25 @@ function ProductCard({ product }) {
 
         <p className="text-xs text-gray-600 mb-2">Free Delivery</p>
 
-        <div className="flex items-center gap-1">
-          <div className="flex items-center bg-teal-600 text-white px-1.5 py-0.5 rounded text-xs font-semibold">
-            {product.rating}{" "}
-            <Star className="w-2.5 h-2.5 ml-0.5 fill-current" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <div className="flex items-center bg-teal-600 text-white px-1.5 py-0.5 rounded text-xs font-semibold">
+              {product.rating}{" "}
+              <Star className="w-2.5 h-2.5 ml-0.5 fill-current" />
+            </div>
+            <span className="text-xs text-gray-500">
+              (
+              {product.reviews > 999
+                ? (product.reviews / 1000).toFixed(0) + "k"
+                : product.reviews}
+              )
+            </span>
           </div>
-          <span className="text-xs text-gray-500">
-            (
-            {product.reviews > 999
-              ? (product.reviews / 1000).toFixed(0) + "k"
-              : product.reviews}
-            )
-          </span>
+          <img 
+            src="data:image/png;base64,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" 
+            alt="Trusted" 
+            className="h-5"
+          />
         </div>
       </div>
     </div>
