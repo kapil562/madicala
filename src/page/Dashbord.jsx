@@ -49,7 +49,7 @@ function CategoryCirclesSlider() {
       <div
         ref={scrollRef}
         className="flex gap-4 px-4 overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -79,91 +79,88 @@ function ImageSlider({ images }) {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
     }, 3000);
-
     return () => clearInterval(interval);
   }, [images.length]);
 
   return (
-    <div className="relative w-full overflow-hidden bg-white px-4 py-3">
-      <div
-        className="flex transition-transform duration-500 ease-out"
-        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-      >
-        {images.map((img, index) => (
-          <div key={index} className="w-full flex-shrink-0">
-            <img
-              src={img}
-              alt={`Slide ${index + 1}`}
-              className="w-full h-auto object-cover rounded-lg"
-            />
-          </div>
-        ))}
-      </div>
+    <div className="relative w-full bg-white px-3 py-3 flex gap-3">
+      {/* Main Slider */}
+      <div className="flex-1 relative overflow-hidden rounded-lg">
+        <div
+          className="flex transition-transform duration-500 ease-out"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        >
+          {images.map((img, index) => (
+            <div key={index} className="w-full flex-shrink-0">
+              <img
+                src={img}
+                alt={`Slide ${index + 1}`}
+                className="w-full h-full object-cover rounded-lg"
+              />
+            </div>
+          ))}
+        </div>
 
-      {/* Dots Indicator */}
-      <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex gap-1.5">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`h-1.5 rounded-full transition-all ${
-              index === currentIndex
-                ? "bg-purple-600 w-6"
-                : "bg-gray-300 w-1.5"
-            }`}
-          />
-        ))}
+        {/* Dots Indicator */}
+        <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-1.5">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`h-1.5 rounded-full transition-all ${
+                index === currentIndex
+                  ? "bg-purple-600 w-6"
+                  : "bg-gray-300 w-1.5"
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
+// ---------------- COUNTDOWN HOOK ----------------
+function useCountdown(startSeconds = 30 * 60) {
+  const [timeLeft, setTimeLeft] = useState(startSeconds);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) return startSeconds; // Reset after finish
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [startSeconds]);
+
+  const formatTime = () => {
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, "0");
+    const s = (timeLeft % 60).toString().padStart(2, "0");
+    return `${m}m : ${s}s`;
+  };
+
+  return formatTime();
+}
+
 // ---------------- PROMOTIONAL BANNERS ----------------
 function PromotionalBanners() {
+  const time = useCountdown();
+
   return (
     <div className="bg-white">
-     
-
       {/* Buy 2 Get 1 Free Banner */}
       <div className="w-full bg-purple-600 py-4 text-center text-white font-semibold text-sm">
         Buy 2 Get 1 Free (Add 3 item to cart)
       </div>
 
-      {/* Feature Icons - with images */}
-      <div className="bg-yellow-50 py-4 px-4 flex justify-around items-center">
-        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm">
-            <img 
-              src="https://images.meesho.com/images/pow/easy_returns.png" 
-              alt="Easy returns" 
-              className="w-8 h-8"
-            />
-          </div>
-          <span className="text-xs text-gray-700 text-center">Easy returns</span>
-          <span className="text-xs text-gray-700 text-center">& refunds</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm">
-            <img 
-              src="https://images.meesho.com/images/pow/cod.png" 
-              alt="Cash on delivery" 
-              className="w-8 h-8"
-            />
-          </div>
-          <span className="text-xs text-gray-700 text-center">Cash on</span>
-          <span className="text-xs text-gray-700 text-center">delivery</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm">
-            <img 
-              src="https://images.meesho.com/images/pow/lowest_price.png" 
-              alt="Lowest price" 
-              className="w-8 h-8"
-            />
-          </div>
-          <span className="text-xs text-gray-700 text-center">Lowest</span>
-          <span className="text-xs text-gray-700 text-center">price</span>
-        </div>
+      {/* Feature Icons */}
+      <div className="w-full bg-[#fffbea] flex justify-center py-4">
+        <img
+          src="https://kurtikk.diwalioffer.shop/static/media/freeshippingposter.8c0aff28d27a959880ff.webp"
+          alt="Easy returns, COD, Lowest price"
+          className="max-w-4xl w-full object-contain"
+        />
       </div>
 
       {/* Daily Deals */}
@@ -174,7 +171,7 @@ function PromotionalBanners() {
         </div>
         <div className="bg-yellow-100 px-3 py-1 rounded-full flex items-center gap-1">
           <span className="text-sm">⏰</span>
-          <span className="text-xs font-semibold">00h : 11m : 58s</span>
+          <span className="text-xs font-semibold">{time}</span>
         </div>
       </div>
 
@@ -204,7 +201,7 @@ function ProductCard({ product }) {
         <Heart className="w-4 h-4 text-gray-600" />
       </button>
 
-      {/* Product Image - Square aspect ratio */}
+      {/* Product Image */}
       <div
         className="w-full relative bg-gray-50"
         style={{ paddingBottom: "100%" }}
@@ -218,7 +215,6 @@ function ProductCard({ product }) {
 
       {/* Content */}
       <div className="p-2">
-        {/* Product Name - 2 lines max */}
         <h3
           className="text-xs text-gray-700 mb-1 overflow-hidden"
           style={{
@@ -232,7 +228,6 @@ function ProductCard({ product }) {
           {product.name}
         </h3>
 
-        {/* Price Section */}
         <div className="flex items-center gap-2 mb-1">
           <span className="text-base font-bold text-gray-900">
             ₹{product.price}
@@ -242,23 +237,24 @@ function ProductCard({ product }) {
           </span>
         </div>
 
-        {/* Special Offer */}
         <p className="text-xs text-teal-600 mb-1">
           ₹{product.price - 20} with{" "}
           {Math.floor(Math.random() * 2) + 1} Special Offer
         </p>
 
-        {/* Free Delivery */}
         <p className="text-xs text-gray-600 mb-2">Free Delivery</p>
 
-        {/* Rating */}
         <div className="flex items-center gap-1">
           <div className="flex items-center bg-teal-600 text-white px-1.5 py-0.5 rounded text-xs font-semibold">
             {product.rating}{" "}
             <Star className="w-2.5 h-2.5 ml-0.5 fill-current" />
           </div>
           <span className="text-xs text-gray-500">
-            ({product.reviews > 999 ? (product.reviews / 1000).toFixed(0) + "k" : product.reviews})
+            (
+            {product.reviews > 999
+              ? (product.reviews / 1000).toFixed(0) + "k"
+              : product.reviews}
+            )
           </span>
         </div>
       </div>
@@ -269,16 +265,23 @@ function ProductCard({ product }) {
 // ---------------- PRODUCT GRID ----------------
 function ProductGrid() {
   const sliderImages = [
-    "https://images.meesho.com/images/marketing/1730372231247_512.webp",
-    "https://images.meesho.com/images/marketing/1730111862877_512.webp",
-    "https://images.meesho.com/images/marketing/1729753726565_512.webp",
-    "https://images.meesho.com/images/marketing/1730281416610_512.webp",
-    "https://images.meesho.com/images/marketing/1730195366951_512.webp",
-    "https://images.meesho.com/images/marketing/1730109072058_512.webp",
-    "https://images.meesho.com/images/marketing/1729840526226_512.webp",
-    "https://images.meesho.com/images/marketing/1730023766693_512.webp",
-    "https://images.meesho.com/images/marketing/1729926846411_512.webp",
-    "https://images.meesho.com/images/marketing/1730304906674_512.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/c1oug.529b42955c36742bbffa.gif",
+    "https://kurtikk.diwalioffer.shop/static/media/0muga.5a23765c71bc806439e8.gif",
+    "https://kurtikk.diwalioffer.shop/static/media/rj4n7_600.8726da3ef2bdae12fe59.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714392890046_600.e12a058ac59a2979f9f1.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714392923259_600.cfd5b7264b5d0fb79f79.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/wgxt9_600.d3e7adfabdd17ba535d1.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714393007305_600.85cf1f81a6a13df4793a.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714393036273_600.fc4fb5b894ebe0d5fee6.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714393062584_600.19620d86d9cdff12a19a.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714393091336_600.1e604b1ae9351c4c9dcb.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714393117987_600.14ac979a80904e2cb594.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714393144837_600.f87e79ef6ae7b3caa865.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714393169858_600.1530bb1bc2b0b54f0bc1.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714393194978_600.16cf8274447ef066e03f.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714393219415_600.e2bd9dbe2fc7c270c8f6.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1714393245702_600.8e3c201784ea0376cff8.webp",
+    "https://kurtikk.diwalioffer.shop/static/media/1697808309043_600.d42e360ab435882d0d6a.webp",
   ];
 
   const imageLinks = [
@@ -320,10 +323,10 @@ function ProductGrid() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      
-      {/* Category Circles Slider - No text below */}
+
+      {/* Category Circles Slider */}
       <CategoryCirclesSlider />
-      
+
       {/* Maha Sale Banner */}
       <div className="w-full bg-yellow-400 py-2 px-4">
         <img
@@ -336,7 +339,7 @@ function ProductGrid() {
       {/* 10 Image Slider */}
       <ImageSlider images={sliderImages} />
 
-      {/* Buy 2 Get 1 Free + Other Banners */}
+      {/* Banners */}
       <PromotionalBanners />
 
       {/* Products Header */}
@@ -346,7 +349,7 @@ function ProductGrid() {
         </h2>
       </div>
 
-      {/* Product Grid - 2 columns */}
+      {/* Product Grid */}
       <div className="grid grid-cols-2 gap-0">
         {products.map((item, index) => (
           <div

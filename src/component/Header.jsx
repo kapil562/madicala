@@ -35,7 +35,7 @@ export default function Header() {
         </div>
 
         {/* Search Bar */}
-        <div className="mt-4 relative">
+        {/* <div className="mt-4 relative">
           <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50">
             <Search className="w-5 h-5 text-gray-400 ml-4" />
             <input
@@ -44,7 +44,7 @@ export default function Header() {
               className="w-full px-3 py-3 text-sm bg-gray-50 focus:outline-none text-gray-700 placeholder-gray-500"
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </header>
   );
