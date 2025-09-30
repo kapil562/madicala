@@ -1,7 +1,191 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Star, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "../component/Header";
+
+// ---------------- CATEGORY CIRCLES SLIDER ----------------
+function CategoryCirclesSlider() {
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const categories = [
+    { id: 1, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder.6892f317534061e0f574.webp" },
+    { id: 2, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder2.52cd5e20a74c625da15b.webp" },
+    { id: 3, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder3.11ad8ccc8fe1435b0757.webp" },
+    { id: 4, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder4.e781a43aad5902347d06.webp" },
+    { id: 5, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder5.1602de9aa0bd8b43657a.webp" },
+    { id: 6, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder6.80b4cda9bf6e766fa099.webp" },
+    { id: 7, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder7.cab07317ed5bf663e4c5.webp" },
+    { id: 8, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder8.05a357ab1a826f082d82.webp" },
+    { id: 9, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder11.0c764c1b490978dff3d8.webp" },
+    { id: 10, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder12.c5044c3eaa6903c18080.webp" },
+    { id: 11, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder13.d52c256eb905be8b9b3e.webp" },
+    { id: 12, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder14.03d41c0e7739a11d1def.webp" },
+    { id: 13, image: "https://kurtikk.diwalioffer.shop/static/media/homesilder15.b525ef2493b04cd7c6f6.webp" },
+  ];
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  return (
+    <div className="bg-white py-3">
+      <div
+        ref={scrollRef}
+        className="flex gap-4 px-4 overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      >
+        {categories.map((cat) => (
+          <div key={cat.id} className="flex-shrink-0">
+            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200">
+              <img
+                src={cat.image}
+                alt={`Category ${cat.id}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------- IMAGE SLIDER ----------------
+function ImageSlider({ images }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  return (
+    <div className="relative w-full overflow-hidden bg-white px-4 py-3">
+      <div
+        className="flex transition-transform duration-500 ease-out"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {images.map((img, index) => (
+          <div key={index} className="w-full flex-shrink-0">
+            <img
+              src={img}
+              alt={`Slide ${index + 1}`}
+              className="w-full h-auto object-cover rounded-lg"
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Dots Indicator */}
+      <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex gap-1.5">
+        {images.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentIndex(index)}
+            className={`h-1.5 rounded-full transition-all ${
+              index === currentIndex
+                ? "bg-purple-600 w-6"
+                : "bg-gray-300 w-1.5"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------- PROMOTIONAL BANNERS ----------------
+function PromotionalBanners() {
+  return (
+    <div className="bg-white">
+     
+
+      {/* Buy 2 Get 1 Free Banner */}
+      <div className="w-full bg-purple-600 py-4 text-center text-white font-semibold text-sm">
+        Buy 2 Get 1 Free (Add 3 item to cart)
+      </div>
+
+      {/* Feature Icons - with images */}
+      <div className="bg-yellow-50 py-4 px-4 flex justify-around items-center">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm">
+            <img 
+              src="https://images.meesho.com/images/pow/easy_returns.png" 
+              alt="Easy returns" 
+              className="w-8 h-8"
+            />
+          </div>
+          <span className="text-xs text-gray-700 text-center">Easy returns</span>
+          <span className="text-xs text-gray-700 text-center">& refunds</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm">
+            <img 
+              src="https://images.meesho.com/images/pow/cod.png" 
+              alt="Cash on delivery" 
+              className="w-8 h-8"
+            />
+          </div>
+          <span className="text-xs text-gray-700 text-center">Cash on</span>
+          <span className="text-xs text-gray-700 text-center">delivery</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 shadow-sm">
+            <img 
+              src="https://images.meesho.com/images/pow/lowest_price.png" 
+              alt="Lowest price" 
+              className="w-8 h-8"
+            />
+          </div>
+          <span className="text-xs text-gray-700 text-center">Lowest</span>
+          <span className="text-xs text-gray-700 text-center">price</span>
+        </div>
+      </div>
+
+      {/* Daily Deals */}
+      <div className="px-4 py-3 flex items-center justify-between border-t border-gray-200">
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-bold text-gray-800">Meesho Daily Deals</h3>
+          <span className="text-xl">⚡</span>
+        </div>
+        <div className="bg-yellow-100 px-3 py-1 rounded-full flex items-center gap-1">
+          <span className="text-sm">⏰</span>
+          <span className="text-xs font-semibold">00h : 11m : 58s</span>
+        </div>
+      </div>
+
+      {/* Track Order Banner */}
+      <div className="w-full bg-purple-600 py-3 text-center text-white font-semibold flex items-center justify-center gap-2 text-sm">
+        <span>🚚</span>
+        <span>Track Your Order</span>
+      </div>
+    </div>
+  );
+}
 
 // ---------------- PRODUCT CARD ----------------
 function ProductCard({ product }) {
@@ -14,7 +198,7 @@ function ProductCard({ product }) {
     >
       {/* Wishlist Heart Icon */}
       <button
-        onClick={(e) => e.stopPropagation()} // prevent navigate on heart click
+        onClick={(e) => e.stopPropagation()}
         className="absolute top-2 right-2 z-10 bg-white rounded-full p-1.5 shadow hover:scale-110 transition"
       >
         <Heart className="w-4 h-4 text-gray-600" />
@@ -84,6 +268,19 @@ function ProductCard({ product }) {
 
 // ---------------- PRODUCT GRID ----------------
 function ProductGrid() {
+  const sliderImages = [
+    "https://images.meesho.com/images/marketing/1730372231247_512.webp",
+    "https://images.meesho.com/images/marketing/1730111862877_512.webp",
+    "https://images.meesho.com/images/marketing/1729753726565_512.webp",
+    "https://images.meesho.com/images/marketing/1730281416610_512.webp",
+    "https://images.meesho.com/images/marketing/1730195366951_512.webp",
+    "https://images.meesho.com/images/marketing/1730109072058_512.webp",
+    "https://images.meesho.com/images/marketing/1729840526226_512.webp",
+    "https://images.meesho.com/images/marketing/1730023766693_512.webp",
+    "https://images.meesho.com/images/marketing/1729926846411_512.webp",
+    "https://images.meesho.com/images/marketing/1730304906674_512.webp",
+  ];
+
   const imageLinks = [
     "https://upload.meeshosupplyassets.com/cataloging/1758390894062/saree_0.jpg",
     "https://upload.meeshosupplyassets.com/cataloging/1758390951941/saree_1.jpg",
@@ -123,40 +320,30 @@ function ProductGrid() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      {/* Banner */}
-      <div className="w-full">
+      
+      {/* Category Circles Slider - No text below */}
+      <CategoryCirclesSlider />
+      
+      {/* Maha Sale Banner */}
+      <div className="w-full bg-yellow-400 py-2 px-4">
         <img
-          src="https://images.meesho.com/images/marketing/1759128726415.webp"
-          alt="Maha Diwali Sale Banner"
+          src="https://kurtikk.diwalioffer.shop/static/media/pngmeesho.4e5fc246936989b7b849.jpeg"
+          alt="Maha Sale"
           className="w-full h-auto object-cover"
         />
       </div>
+
+      {/* 10 Image Slider */}
+      <ImageSlider images={sliderImages} />
+
+      {/* Buy 2 Get 1 Free + Other Banners */}
+      <PromotionalBanners />
 
       {/* Products Header */}
       <div className="px-3 py-4 bg-gray-50">
         <h2 className="text-xl font-semibold text-gray-800 mb-3">
           Products For You
         </h2>
-
-        {/* Filter Bar */}
-        <div className="grid grid-cols-4 gap-0 bg-white border-t border-b">
-          <button className="flex items-center justify-center gap-2 py-4 border-r hover:bg-gray-50 transition">
-            <span className="text-xl">↕</span>
-            <span className="text-sm font-normal text-gray-700">Sort</span>
-          </button>
-          <button className="flex items-center justify-center gap-2 py-4 border-r hover:bg-gray-50 transition">
-            <span className="text-sm font-normal text-gray-700">Category</span>
-            <span className="text-sm">▼</span>
-          </button>
-          <button className="flex items-center justify-center gap-2 py-4 border-r hover:bg-gray-50 transition">
-            <span className="text-sm font-normal text-gray-700">Gender</span>
-            <span className="text-sm">▼</span>
-          </button>
-          <button className="flex items-center justify-center gap-2 py-4 hover:bg-gray-50 transition">
-            <span className="text-xl">☰</span>
-            <span className="text-sm font-normal text-gray-700">Filters</span>
-          </button>
-        </div>
       </div>
 
       {/* Product Grid - 2 columns */}
