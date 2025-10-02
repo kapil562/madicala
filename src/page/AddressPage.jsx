@@ -16,8 +16,6 @@ const AddressPage = () => {
     address: "",
   });
 
-  const [error, setError] = useState("");
-
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-600">
@@ -28,24 +26,10 @@ const AddressPage = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError(""); // reset error on typing
   };
 
   const handleContinue = () => {
-    // Validation
-    if (
-      !formData.name ||
-      !formData.phone ||
-      !formData.pincode ||
-      !formData.city ||
-      !formData.state ||
-      !formData.address
-    ) {
-      setError("⚠️ Please fill all address fields before continuing.");
-      return;
-    }
-
-    // Navigate to Payment Page with data
+    // ⚡ No validation required now
     navigate(`/PaymentPage/${product.id}`, {
       state: { product, selectedSize, quantity, finalPrice, formData },
     });
@@ -75,12 +59,12 @@ const AddressPage = () => {
           </div>
         </div>
 
-        {/* Address Form */}
+        {/* Address Form (optional now) */}
         <div className="space-y-4">
           <input
             type="text"
             name="name"
-            placeholder="Full Name"
+            placeholder="Full Name (Optional)"
             value={formData.name}
             onChange={handleChange}
             className="w-full border rounded p-2"
@@ -88,7 +72,7 @@ const AddressPage = () => {
           <input
             type="tel"
             name="phone"
-            placeholder="Mobile Number"
+            placeholder="Mobile Number (Optional)"
             value={formData.phone}
             onChange={handleChange}
             className="w-full border rounded p-2"
@@ -96,7 +80,7 @@ const AddressPage = () => {
           <input
             type="text"
             name="pincode"
-            placeholder="Pincode"
+            placeholder="Pincode (Optional)"
             value={formData.pincode}
             onChange={handleChange}
             className="w-full border rounded p-2"
@@ -105,7 +89,7 @@ const AddressPage = () => {
             <input
               type="text"
               name="city"
-              placeholder="City"
+              placeholder="City (Optional)"
               value={formData.city}
               onChange={handleChange}
               className="w-full border rounded p-2"
@@ -113,7 +97,7 @@ const AddressPage = () => {
             <input
               type="text"
               name="state"
-              placeholder="State"
+              placeholder="State (Optional)"
               value={formData.state}
               onChange={handleChange}
               className="w-full border rounded p-2"
@@ -121,14 +105,12 @@ const AddressPage = () => {
           </div>
           <textarea
             name="address"
-            placeholder="Full Address (House no, street, landmark)"
+            placeholder="Full Address (Optional)"
             value={formData.address}
             onChange={handleChange}
             className="w-full border rounded p-2 h-24"
           />
         </div>
-
-        {error && <p className="text-red-600 text-sm mt-3">{error}</p>}
 
         {/* Continue Button */}
         <div className="mt-6">

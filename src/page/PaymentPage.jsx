@@ -1,40 +1,37 @@
 import React, { useState, useMemo } from "react";
 import { ChevronDown, CreditCard, Wallet, ShieldCheck } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const MERCHANT_UPI_ID = "manishprajapatip29-1@okicici";
 const COUNTRY_CURRENCY = "INR";
 
 const PaymentPage = () => {
+  const location = useLocation();
+  const { product, selectedSize, quantity, finalPrice } = location.state || {};
+
   const [selectedPayment, setSelectedPayment] = useState("");
   const [isReselling, setIsReselling] = useState(false);
 
-  // Mock order data
-  const orderData = {
-    orderId: "ORDER123",
-    product: {
-      name: "Sample Product",
-      price: 78,
-      image:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
-    },
-    selectedSize: "M",
-  };
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-600">
+        No Product Found
+      </div>
+    );
+  }
 
-  const { product } = orderData;
-
-  // Common UPI params
+  // ✅ Common UPI params with dynamic amount
   const baseParams = useMemo(() => {
-    const tid = `ORDER:${orderData.orderId}`;
+    const tid = `ORDER:${product.id}`;
     return new URLSearchParams({
       pa: MERCHANT_UPI_ID,
       pn: "MerchantName",
-      am: product.price?.toString() || "0",
+      am: finalPrice?.toString() || "0",
       cu: COUNTRY_CURRENCY,
       tid,
     }).toString();
-  }, [product.price, orderData.orderId]);
+  }, [finalPrice, product.id]);
 
-  // App-specific links
   const paymentLinks = {
     phonepe: `phonepe://pay?${baseParams}`,
     paytm: `paytmmp://pay?${baseParams}`,
@@ -213,12 +210,12 @@ const PaymentPage = () => {
         {/* Price Details */}
         <div className="px-4 pb-4 border-t pt-4">
           <h3 className="text-base font-semibold text-gray-800 mb-3">
-            Price Details ( 1 item )
+            Price Details ( {quantity} item{quantity > 1 ? "s" : ""} )
           </h3>
           <div className="flex justify-between items-center mb-3">
             <span className="text-sm text-gray-600">Total Product Price</span>
             <span className="text-sm font-medium text-gray-800">
-              + ₹{product.price}
+              + ₹{finalPrice}
             </span>
           </div>
           <div className="flex justify-between items-center pt-3 border-t">
@@ -226,7 +223,7 @@ const PaymentPage = () => {
               Order Total
             </span>
             <span className="text-lg font-bold text-gray-900">
-              ₹{product.price}
+              ₹{finalPrice}
             </span>
           </div>
         </div>
@@ -237,7 +234,7 @@ const PaymentPage = () => {
             onClick={handlePayClick}
             className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-4 rounded-lg transition-colors"
           >
-            PROCEED TO PAY ₹{product.price}
+            PROCEED TO PAY ₹{finalPrice}
           </button>
         </div>
       </div>

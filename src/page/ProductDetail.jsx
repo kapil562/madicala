@@ -8,8 +8,6 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const product = location.state;
 
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1);
 
   if (!product) {
@@ -23,26 +21,31 @@ const ProductDetail = () => {
   const finalPrice = product.price * quantity;
 
   const handleBuyNow = () => {
-    if (!selectedSize) {
-      setError("⚠️ Please select a size before buying.");
-      return;
-    }
-    setError("");
     navigate(`/AddressPage/${product.id}`, {
-      state: { product, selectedSize, quantity, finalPrice },
+      state: { product, quantity, finalPrice, selectedSize: "Free Size" },
     });
   };
 
   const handleAddToCart = () => {
-    if (!selectedSize) {
-      setError("⚠️ Please select a size before adding to cart.");
-      return;
-    }
-    setError("");
     alert(
-      `🛒 Added ${product.name} (Size: ${selectedSize}, Qty: ${quantity}) - ₹${finalPrice} to cart`
+      `🛒 Added ${product.name} (Size: Free Size, Qty: ${quantity}) - ₹${finalPrice} to cart`
     );
   };
+
+  // ✅ सारे sizes fix करके डाल दिए
+  const allSizes = [
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL",
+    "3XL",
+    "4XL",
+    "5XL",
+    "6XL",
+    "7XL",
+    "8XL",
+  ];
 
   return (
     <div>
@@ -83,25 +86,17 @@ const ProductDetail = () => {
             </div>
             <p className="text-sm text-green-700">Free Delivery</p>
 
-            {/* Sizes */}
+            {/* Sizes (Optional - सिर्फ दिखाने के लिए) */}
             <div>
-              <h4 className="font-medium mb-2">Select Size</h4>
-              <div className="flex gap-3">
-                {["S", "M", "L", "XL", "XXL"].map((size) => (
-                  <button
+              <h4 className="font-medium mb-2">Available Sizes</h4>
+              <div className="flex flex-wrap gap-3">
+                {allSizes.map((size) => (
+                  <span
                     key={size}
-                    onClick={() => {
-                      setSelectedSize(size);
-                      setError("");
-                    }}
-                    className={`px-4 py-2 border rounded-lg ${
-                      selectedSize === size
-                        ? "bg-pink-600 text-white border-pink-600"
-                        : "hover:bg-gray-100"
-                    }`}
+                    className="px-4 py-2 border rounded-lg bg-gray-100 text-gray-700 cursor-not-allowed"
                   >
                     {size}
-                  </button>
+                  </span>
                 ))}
               </div>
             </div>
@@ -125,8 +120,6 @@ const ProductDetail = () => {
                 </button>
               </div>
             </div>
-
-            {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 
             {/* Buttons */}
             <div className="flex gap-4 mt-4">
@@ -175,7 +168,7 @@ const ProductDetail = () => {
               <ul className="space-y-1">
                 <li>Fabric: Cotton Blend</li>
                 <li>Sleeve Length: Long Sleeves</li>
-                <li>Sizes: S, M, L, XL, XXL</li>
+                <li>Sizes: {allSizes.join(", ")}</li>
                 <li>Country of Origin: India</li>
               </ul>
             </div>
