@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import Header from "../component/Header";
 
@@ -9,6 +9,12 @@ const ProductDetail = () => {
   const product = location.state;
 
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState(""); // ✅ size state
+
+  // ✅ जब page open हो तो हमेशा top से scroll हो
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!product) {
     return (
@@ -22,17 +28,24 @@ const ProductDetail = () => {
 
   const handleBuyNow = () => {
     navigate(`/AddressPage/${product.id}`, {
-      state: { product, quantity, finalPrice, selectedSize: "Free Size" },
+      state: {
+        product,
+        quantity,
+        finalPrice,
+        selectedSize: selectedSize || "Free Size", // ✅ अगर size select नहीं किया तो default
+      },
     });
   };
 
   const handleAddToCart = () => {
     alert(
-      `🛒 Added ${product.name} (Size: Free Size, Qty: ${quantity}) - ₹${finalPrice} to cart`
+      `🛒 Added ${product.name} (Size: ${
+        selectedSize || "Free Size"
+      }, Qty: ${quantity}) - ₹${finalPrice} to cart`
     );
   };
 
-  // ✅ सारे sizes fix करके डाल दिए
+  // ✅ Fixed sizes
   const allSizes = [
     "S",
     "M",
@@ -86,19 +99,29 @@ const ProductDetail = () => {
             </div>
             <p className="text-sm text-green-700">Free Delivery</p>
 
-            {/* Sizes (Optional - सिर्फ दिखाने के लिए) */}
+            {/* Sizes (selectable, optional) */}
             <div>
               <h4 className="font-medium mb-2">Available Sizes</h4>
               <div className="flex flex-wrap gap-3">
                 {allSizes.map((size) => (
-                  <span
+                  <button
                     key={size}
-                    className="px-4 py-2 border rounded-lg bg-gray-100 text-gray-700 cursor-not-allowed"
+                    onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 border rounded-lg text-sm font-medium transition ${
+                      selectedSize === size
+                        ? "bg-pink-600 text-white border-pink-600"
+                        : "bg-gray-100 text-gray-700 border-gray-300 hover:border-pink-400"
+                    }`}
                   >
                     {size}
-                  </span>
+                  </button>
                 ))}
               </div>
+              {selectedSize && (
+                <p className="text-xs text-gray-600 mt-1">
+                  Selected Size: <span className="font-semibold">{selectedSize}</span>
+                </p>
+              )}
             </div>
 
             {/* Quantity */}

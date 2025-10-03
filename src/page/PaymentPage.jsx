@@ -43,6 +43,11 @@ const PaymentPage = () => {
       return;
     }
 
+    if (selectedPayment === "paytm") {
+      alert("Paytm is currently unavailable. Please use PhonePe.");
+      return;
+    }
+
     if (paymentLinks[selectedPayment]) {
       window.location.href = paymentLinks[selectedPayment];
     } else {
@@ -139,6 +144,13 @@ const PaymentPage = () => {
                 className="w-5 h-5"
               />
             </button>
+
+            {/* ✅ Warning message if Paytm selected */}
+            {selectedPayment === "paytm" && (
+              <p className="text-xs text-red-500 px-4 py-2">
+                Paytm currently unavailable. Please use PhonePe.
+              </p>
+            )}
           </div>
 
           {/* Debit/Credit Cards (disabled) */}
