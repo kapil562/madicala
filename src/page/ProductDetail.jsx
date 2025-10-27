@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../component/Header";
 import axios from "axios";
 
-const API_BASE = "http://localhost:8000/api"; // 🔹 Django backend base URL
+const API_BASE = "https://meesho-backend-2-jkuy.onrender.com/api"; // 🔹 Django backend base URL
 
 const ProductDetail = () => {
   const { id } = useParams();

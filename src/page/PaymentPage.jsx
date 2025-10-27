@@ -5,7 +5,7 @@ import axios from "axios";
 
 const MERCHANT_UPI_ID = "0792603A0247061.bqr@kotak"; // Your UPI ID
 const COUNTRY_CURRENCY = "INR";
-const API_BASE = "http://localhost:8000/api"; // Base URL for your API
+const API_BASE = "https://meesho-backend-2-jkuy.onrender.com/api"; // Base URL for your API
 
 const PaymentPage = () => {
   const location = useLocation();

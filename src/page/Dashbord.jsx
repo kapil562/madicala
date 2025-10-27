@@ -166,7 +166,7 @@ function ProductGrid() {
 
   // ✅ Fetch products from Django backend
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products/")
+    fetch("https://meesho-backend-2-jkuy.onrender.com/api/products/")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
