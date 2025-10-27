@@ -1,11 +1,9 @@
 import React, { useState, useMemo } from "react";
 import { ChevronDown, CreditCard, Wallet, ShieldCheck } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
 
-const MERCHANT_UPI_ID = "0792603A0247061.bqr@kotak"; // Your UPI ID
+const MERCHANT_UPI_ID = "0792603A0247061.bqr@kotak";
 const COUNTRY_CURRENCY = "INR";
-const API_BASE = "http://localhost:8000/api"; // Base URL for your API
 
 const PaymentPage = () => {
   const location = useLocation();
@@ -39,7 +37,7 @@ const PaymentPage = () => {
     paytm: `paytmmp://pay?${baseParams}`,
   };
 
-  const handlePayClick = async () => {
+  const handlePayClick = () => {
     if (!selectedPayment) {
       alert("Please select a payment method first!");
       return;
@@ -50,23 +48,10 @@ const PaymentPage = () => {
       return;
     }
 
-    // ✅ Log the transaction to the backend
-    try {
-      await axios.post(`${API_BASE}/create-transaction/`, {
-        product_name: product.name,
-        quantity: quantity,
-        amount: finalPrice,
-        payment_method: selectedPayment,
-      });
-      console.log("Transaction saved successfully!");
-
-      // ✅ Redirect to UPI payment
-      if (paymentLinks[selectedPayment]) {
-        window.location.href = paymentLinks[selectedPayment];
-      }
-    } catch (error) {
-      console.error("Error saving transaction:", error);
-      alert("Error saving transaction to backend!");
+    if (paymentLinks[selectedPayment]) {
+      window.location.href = paymentLinks[selectedPayment];
+    } else {
+      alert("This payment method is not supported yet!");
     }
   };
 
@@ -117,7 +102,9 @@ const PaymentPage = () => {
                     className="w-8 h-8 object-contain"
                   />
                 </div>
-                <span className="text-sm font-medium text-gray-800">PhonePe</span>
+                <span className="text-sm font-medium text-gray-800">
+                  PhonePe
+                </span>
               </div>
               <input
                 type="radio"
@@ -180,6 +167,22 @@ const PaymentPage = () => {
           </div>
         </div>
 
+        {/* Pay in Case Section */}
+        <div className="px-4 pb-4">
+          <p className="text-xs text-gray-500 font-semibold mb-3">PAY IN CASE</p>
+          <div className="border rounded-lg bg-gray-50">
+            <button className="w-full flex items-center justify-between p-4 opacity-50 cursor-not-allowed">
+              <div className="flex items-center gap-3">
+                <Wallet className="w-6 h-6 text-blue-500" />
+                <span className="text-sm font-medium text-gray-800">
+                  Cash on Delivery ( Not Available )
+                </span>
+              </div>
+              <ChevronDown className="w-5 h-5 text-gray-400" />
+            </button>
+          </div>
+        </div>
+
         {/* Reselling Section */}
         <div className="px-4 pb-4 border-t pt-4">
           <div className="flex items-center justify-between mb-2">
@@ -223,11 +226,17 @@ const PaymentPage = () => {
           </h3>
           <div className="flex justify-between items-center mb-3">
             <span className="text-sm text-gray-600">Total Product Price</span>
-            <span className="text-sm font-medium text-gray-800">+ ₹{finalPrice}</span>
+            <span className="text-sm font-medium text-gray-800">
+              + ₹{finalPrice}
+            </span>
           </div>
           <div className="flex justify-between items-center pt-3 border-t">
-            <span className="text-base font-semibold text-gray-800">Order Total</span>
-            <span className="text-lg font-bold text-gray-900">₹{finalPrice}</span>
+            <span className="text-base font-semibold text-gray-800">
+              Order Total
+            </span>
+            <span className="text-lg font-bold text-gray-900">
+              ₹{finalPrice}
+            </span>
           </div>
         </div>
 
