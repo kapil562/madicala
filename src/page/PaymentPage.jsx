@@ -112,7 +112,7 @@ const PaymentPage = () => {
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
                   <img
-                    src="https://kurtikk.diwalioffer.shop/static/media/phonepe.558dd7fea5d980ccf2c8.png"
+                    src="https://imgs.search.brave.com/ocFAMm1R4ib-9sZzXXebk2hCfXxFatiRTXqcEkFfNdg/rs:fit:32:32:1:0/g:ce/aHR0cDovL2Zhdmlj/b25zLnNlYXJjaC5i/cmF2ZS5jb20vaWNv/bnMvOGU4Y2QxMDk4/Zjc2NTE0N2EyZWJh/ZGZkNjIyYzM1N2U0/YjJlOWMwZTkzNzk2/YTI5Mjg0M2Y5NWU0/YzdkMTE4Yy93d3cu/cGhvbmVwZS5jb20v"
                     alt="PhonePe"
                     className="w-8 h-8 object-contain"
                   />
@@ -142,7 +142,7 @@ const PaymentPage = () => {
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
                   <img
-                    src="https://kurtikk.diwalioffer.shop/static/media/paytm_icon-icons.com_62778.a23c686df5f6d427a319.png"
+                    src="https://1000logos.net/wp-content/uploads/2023/03/Paytm-logo.png"
                     alt="Paytm"
                     className="w-8 h-8 object-contain"
                   />
