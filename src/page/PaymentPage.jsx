@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ChevronDown, CreditCard, ShieldCheck } from "lucide-react";
+import { ChevronDown, CreditCard, Wallet, ShieldCheck } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 
@@ -13,7 +13,6 @@ const PaymentPage = () => {
 
   const [selectedPayment, setSelectedPayment] = useState("");
   const [isReselling, setIsReselling] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
 
   if (!product) {
     return (
@@ -23,7 +22,7 @@ const PaymentPage = () => {
     );
   }
 
-  // ✅ Generate base UPI params
+  // ✅ Common UPI params with dynamic amount
   const baseParams = useMemo(() => {
     const tid = `ORDER:${product.id}`;
     return new URLSearchParams({
@@ -40,7 +39,6 @@ const PaymentPage = () => {
     paytm: `paytmmp://pay?${baseParams}`,
   };
 
-  // ✅ Create + handle payment
   const handlePayClick = async () => {
     if (!selectedPayment) {
       alert("Please select a payment method first!");
@@ -52,47 +50,29 @@ const PaymentPage = () => {
       return;
     }
 
+    // ✅ Log the transaction to the backend
     try {
-      setIsProcessing(true);
-
-      // Step 1️⃣ — Create pending transaction
-      const response = await axios.post(`${API_BASE}/create-transaction/`, {
+      await axios.post(`${API_BASE}/create-transaction/`, {
         product_name: product.name,
+        quantity: quantity,
         amount: finalPrice,
         payment_method: selectedPayment,
       });
+      console.log("Transaction saved successfully!");
 
-      const transactionId = response.data?.transaction?.transaction_id;
-      console.log("Transaction created:", transactionId);
-
-      // Step 2️⃣ — Open UPI app
+      // ✅ Redirect to UPI payment
       if (paymentLinks[selectedPayment]) {
         window.location.href = paymentLinks[selectedPayment];
       }
-
-      // Step 3️⃣ — Wait 5s (simulate user returning after payment)
-      setTimeout(async () => {
-        try {
-          // For now, we simulate success (later you can auto-detect)
-          await axios.post(`${API_BASE}/verify-transaction/${transactionId}/`, {
-            status: "success",
-          });
-          alert("✅ Payment Successful!");
-        } catch (verifyError) {
-          console.error("Verification failed:", verifyError);
-          alert("❌ Payment Verification Failed!");
-        }
-      }, 5000);
     } catch (error) {
-      console.error("Error creating transaction:", error);
-      alert("Error initiating payment!");
-    } finally {
-      setIsProcessing(false);
+      console.error("Error saving transaction:", error);
+      alert("Error saving transaction to backend!");
     }
   };
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Payment Methods Section */}
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
@@ -108,14 +88,14 @@ const PaymentPage = () => {
           </div>
         </div>
 
-        {/* Online Payment Offer */}
+        {/* Online Payment Offer Banner */}
         <div className="mx-4 mt-4 bg-pink-50 border border-pink-200 rounded-lg p-4">
           <p className="text-pink-600 font-semibold">
             Pay online & get EXTRA ₹25 off
           </p>
         </div>
 
-        {/* Payment Options */}
+        {/* Pay Online Section */}
         <div className="p-4">
           <p className="text-xs text-gray-500 font-semibold mb-3">PAY ONLINE</p>
 
@@ -130,9 +110,9 @@ const PaymentPage = () => {
               }`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full overflow-hidden">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
                   <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/f/f3/PhonePe_Logo.svg"
+                    src="https://imgs.search.brave.com/ocFAMm1R4ib-9sZzXXebk2hCfXxFatiRTXqcEkFfNdg/rs:fit:32:32:1:0/g:ce/aHR0cDovL2Zhdmlj/b25zLnNlYXJjaC5i/cmF2ZS5jb20vaWNv/bnMvOGU4Y2QxMDk4/Zjc2NTE0N2EyZWJh/ZGZkNjIyYzM1N2U0/YjJlOWMwZTkzNzk2/YTI5Mjg0M2Y5NWU0/YzdkMTE4Yy93d3cu/cGhvbmVwZS5jb20v"
                     alt="PhonePe"
                     className="w-8 h-8 object-contain"
                   />
@@ -160,7 +140,7 @@ const PaymentPage = () => {
               }`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full overflow-hidden">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
                   <img
                     src="https://1000logos.net/wp-content/uploads/2023/03/Paytm-logo.png"
                     alt="Paytm"
@@ -178,6 +158,7 @@ const PaymentPage = () => {
               />
             </button>
 
+            {/* ✅ Warning message if Paytm selected */}
             {selectedPayment === "paytm" && (
               <p className="text-xs text-red-500 px-4 py-2">
                 Paytm currently unavailable. Please use PhonePe.
@@ -185,13 +166,13 @@ const PaymentPage = () => {
             )}
           </div>
 
-          {/* Card (disabled) */}
+          {/* Debit/Credit Cards (disabled) */}
           <div className="border rounded-lg mb-3 bg-gray-50">
             <button className="w-full flex items-center justify-between p-4 opacity-50 cursor-not-allowed">
               <div className="flex items-center gap-3">
                 <CreditCard className="w-6 h-6 text-blue-500" />
                 <span className="text-sm font-medium text-gray-800">
-                  Debit/Credit Cards (Not Available)
+                  Debit/Credit Cards ( Not Available )
                 </span>
               </div>
               <ChevronDown className="w-5 h-5 text-gray-400" />
@@ -199,16 +180,52 @@ const PaymentPage = () => {
           </div>
         </div>
 
+        {/* Reselling Section */}
+        <div className="px-4 pb-4 border-t pt-4">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h3 className="text-base font-semibold text-gray-800">
+                Reselling the Order?
+              </h3>
+              <p className="text-xs text-gray-500">
+                Click on 'Yes' to add Final Price
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setIsReselling(false)}
+                className={`px-5 py-2 rounded-full border-2 font-medium text-sm ${
+                  !isReselling
+                    ? "border-pink-500 text-pink-500"
+                    : "border-gray-300 text-gray-600"
+                }`}
+              >
+                No
+              </button>
+              <button
+                onClick={() => setIsReselling(true)}
+                className={`px-5 py-2 rounded-full border-2 font-medium text-sm ${
+                  isReselling
+                    ? "border-pink-500 bg-pink-500 text-white"
+                    : "border-gray-300 text-gray-600"
+                }`}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Price Details */}
         <div className="px-4 pb-4 border-t pt-4">
           <h3 className="text-base font-semibold text-gray-800 mb-3">
-            Price Details ({quantity} item{quantity > 1 ? "s" : ""})
+            Price Details ( {quantity} item{quantity > 1 ? "s" : ""} )
           </h3>
-          <div className="flex justify-between mb-3">
+          <div className="flex justify-between items-center mb-3">
             <span className="text-sm text-gray-600">Total Product Price</span>
-            <span className="text-sm font-medium text-gray-800">₹{finalPrice}</span>
+            <span className="text-sm font-medium text-gray-800">+ ₹{finalPrice}</span>
           </div>
-          <div className="flex justify-between border-t pt-3">
+          <div className="flex justify-between items-center pt-3 border-t">
             <span className="text-base font-semibold text-gray-800">Order Total</span>
             <span className="text-lg font-bold text-gray-900">₹{finalPrice}</span>
           </div>
@@ -218,12 +235,9 @@ const PaymentPage = () => {
         <div className="p-4 border-t">
           <button
             onClick={handlePayClick}
-            disabled={isProcessing}
-            className={`w-full ${
-              isProcessing ? "bg-gray-400" : "bg-pink-500 hover:bg-pink-600"
-            } text-white font-semibold py-4 rounded-lg transition-colors`}
+            className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-4 rounded-lg transition-colors"
           >
-            {isProcessing ? "Processing..." : `PROCEED TO PAY ₹${finalPrice}`}
+            PROCEED TO PAY ₹{finalPrice}
           </button>
         </div>
       </div>
